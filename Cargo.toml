@@ -11,6 +11,7 @@ edition = "2018"
 [workspace]
 members = [
     "libtiny_client",
+    "libtiny_gui",
     "libtiny_logger",
     "libtiny_tui",
     "libtiny_ui",
