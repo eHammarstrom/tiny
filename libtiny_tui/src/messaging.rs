@@ -48,24 +48,19 @@ pub(crate) struct MessagingUI {
 
 /// Like `time::Tm`, but we only care about hour and minute parts.
 #[derive(PartialEq, Eq, Clone, Copy)]
-pub(crate) struct Timestamp {
-    hour: i32,
-    min: i32,
-}
+pub(crate) struct Timestamp { tm: Tm }
 
 impl Timestamp {
     fn stamp(self, msg_area: &mut MsgArea) {
         msg_area.set_style(SegStyle::SchemeStyle(SchemeStyle::Timestamp));
-        msg_area.add_text(&format!("{:02}:{:02} ", self.hour, self.min));
+        msg_area.add_text(&format!("{:02}:{:02}:{:02} ",
+                                   self.tm.tm_hour, self.tm.tm_min, self.tm.tm_sec));
     }
 }
 
 impl From<Tm> for Timestamp {
     fn from(tm: Tm) -> Timestamp {
-        Timestamp {
-            hour: tm.tm_hour,
-            min: tm.tm_min,
-        }
+        Timestamp { tm }
     }
 }
 
@@ -264,13 +259,7 @@ impl MessagingUI {
 
 impl MessagingUI {
     fn add_timestamp(&mut self, ts: Timestamp) {
-        if let Some(ts_) = self.last_activity_ts {
-            if ts_ != ts {
-                ts.stamp(&mut self.msg_area);
-            }
-        } else {
-            ts.stamp(&mut self.msg_area);
-        }
+        ts.stamp(&mut self.msg_area);
         self.last_activity_ts = Some(ts);
     }
 
